@@ -3,8 +3,8 @@
 
 module.exports = {
   // Server listener [Required]
-  address: "0.0.0.0",
-  port: "443",
+  address: "127.0.0.1",
+  port: "8080",
 
   // Clusters.
   // 0 will make bostr run clusters with available parallelism / CPU cores.
@@ -38,7 +38,7 @@ module.exports = {
   // NOTE: Please adjust this max score correctly with your configured relays.
   //       If you only setted up 3 relays, Set the <max_eose_score> as 0.
   // Tip : The bigger = The more accurate EOSE, The less = EOSE sent way earlier.
-  max_eose_score: 1,
+  max_eose_score: 3,
 
   // A whitelist of users public keys who could use this bouncer.
   // Leaving this empty will allows everyone to use this bouncer.
@@ -76,6 +76,15 @@ module.exports = {
     "supported_nips": [1,2,9,11,12,15,16,20,22,33,40,42,50],
     "version": require("./package.json").version
   },
+
+  // Cache relays
+  // Used for caching received events from <relays> to reduce bandwidth waste.
+  // Keeping this empty will disable caching function.
+  //
+  // To make this working properly, Please enable <pause_on_limit>.
+  cache_relays: [
+    "wss://desktop-ioaspn6.tailed179.ts.net/cache"
+  ],
 
   // Nostr relays to bounce [Required]
   relays: [
