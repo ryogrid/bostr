@@ -301,7 +301,7 @@ function newConn(addr, id) {
         if (process.env.LOG_ABOUT_RELAYS || log_about_relays) console.log(process.pid, "---", `[${id}]`, `got EOSE from ${relay.url} for ${data[1]}. There are ${client.pendingEOSE.get(data[1])} EOSE received out of ${Array.from(socks).filter(sock => sock.id === id).length} connected relays.`);
 
         if (!cache_relays?.includes(relay.url)) {
-          if (wait_eose && (client.pendingEOSE.get(data[1]) < (max_eose_score || Array.from(socks).filter(sock => sock.id === id).length))) return;
+          if (wait_eose && ((client.pendingEOSE.get(data[1]) < max_eose_score) || (client.pendingEOSE.get(data[1]) < Array.from(socks).filter(sock => sock.id === id).length))) return;
           if (client.pause_subs.has(data[1])) return client.pause_subs.delete(data[1]);
 
           cancel_EOSETimeout(data[1]);
@@ -329,8 +329,12 @@ function newConn(addr, id) {
 
   relay.on('error', _ => {
     if (process.env.LOG_ABOUT_RELAYS || log_about_relays) console.error(process.pid, "-!-", `[${id}]`, relay.url, _.toString())
-    socks.delete(sock);
+    socks.delete(relay);
     relay_conn.delete(relay.url);
+
+    if (!csess.has(id)) return;
+    let tout_handle = setTimeout(_ => newConn(addr, id), reconnect_time || 5000); // As a bouncer server, We need to reconnect.
+    reconn_tout_handles.set(id, tout_handle);    
   });
 
   relay.on('close', _ => {
