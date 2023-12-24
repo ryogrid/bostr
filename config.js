@@ -28,7 +28,7 @@ module.exports = {
   // Could save client's bandwidth.
   //
   // Depending on <wait_eose> settings, It could either miss some events.
-  pause_on_limit: true,
+  pause_on_limit: false,//true,
 
   // EOSE timeout in milliseconds
   eose_timeout: 2300,
@@ -38,6 +38,7 @@ module.exports = {
   // NOTE: Please adjust this max score correctly with your configured relays.
   //       If you only setted up 3 relays, Set the <max_eose_score> as 0.
   // Tip : The bigger = The more accurate EOSE, The less = EOSE sent way earlier.
+
   max_eose_score: 1,
 
   // A whitelist of users public keys who could use this bouncer.
@@ -91,7 +92,6 @@ module.exports = {
   // Nostr relays to bounce [Required]
   relays: [
     "wss://yabu.me",
-    "wss://relay-jp.nostr.wirednet.jp",
     "wss://relay.damus.io",
     "wss://search.nos.today",
   ]
