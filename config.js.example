@@ -1,14 +1,13 @@
-
 // Bostr config
 
 module.exports = {
   // Server listener [Required]
   address: "0.0.0.0",
-  port: "443",
+  port: "8080",
 
   // Clusters.
   // 0 will make bostr run clusters with available parallelism / CPU cores.
-  clusters: 1,
+  clusters: 0,
 
   // Log about bouncer connection with relays? 
   log_about_relays: false,
@@ -44,6 +43,9 @@ module.exports = {
   // Leaving this empty will allows everyone to use this bouncer.
   // NOTE: - Require NIP-42 compatible nostr client
   authorized_keys: [
+    // "pubkey-in-hex",
+    // "npub ....",
+    // ....
   ],
 
   // Used for accessing NIP-42 protected events from certain relays.
@@ -90,8 +92,9 @@ module.exports = {
 
   // Nostr relays to bounce [Required]
   relays: [
-    "wss://yabu.me",
-    "wss://relay.damus.io",
-    //"wss://search.nos.today",
+    "wss://example1.com",
+    "wss://example2.com",
+    // "wss://example3.com",
+    // ...and so on
   ]
 }
