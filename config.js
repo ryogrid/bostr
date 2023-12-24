@@ -31,7 +31,7 @@ module.exports = {
   pause_on_limit: true,
 
   // EOSE timeout in miliseconds
-  eose_timeout: 2300,
+  eose_timeout: 100000,//2300,
 
   // Maximum of received EOSE from relays to send EOSE to client.
   // Normally, waiting EOSE from 3 relays should be enough. Leaving it with 0 equals wait for every established relays.
@@ -89,6 +89,8 @@ module.exports = {
   // Nostr relays to bounce [Required]
   relays: [
     "wss://yabu.me",
+    "wss://relay.nostr.wirednet.jp",
+    "wss://relay-jp.nostr.wirednet.jp",
     "wss://relay.damus.io",
     //"wss://search.nos.today",
   ]
