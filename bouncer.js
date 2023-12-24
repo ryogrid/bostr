@@ -21,7 +21,6 @@ module.exports = (ws, req) => {
   let authKey = null;
   let authorized = true;
 
-  //console.log(ws)
   ws.id = process.pid + Math.floor(Math.random() * 1000) + "_" + csess.size;
   ws.subs = new Map(); // contains filter submitted by clients. per subID
   ws.pause_subs = new Set(); // pause subscriptions from receiving events after reached over <filter.limit> until all relays send EOSE. per subID

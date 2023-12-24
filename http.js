@@ -39,7 +39,6 @@ server.on('request', (req, res) => {
 });
 
 server.on('upgrade', (req, sock, head) => {
-  console.log("Upgrade request received");
   wss.handleUpgrade(req, sock, head, _ => bouncer(_, req));
 });
 
