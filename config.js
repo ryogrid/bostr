@@ -14,7 +14,7 @@ module.exports = {
   log_about_relays: false,
 
   // Time before reconnect to relays in miliseconds.
-  reconnect_time: 500,//1000,
+  reconnect_time: 1000,
 
   // Wait for every connected relays send EOSE.
   // Could improve accurancy on received events.
@@ -28,17 +28,17 @@ module.exports = {
   // Could save client's bandwdith.
   //
   // Depending on <wait_eose> settings, It could either miss some events.
-  pause_on_limit: false,//true,
+  pause_on_limit: true,
 
   // EOSE timeout in miliseconds
-  eose_timeout: 10000,//2300,
+  eose_timeout: 2300,
 
   // Maximum of received EOSE from relays to send EOSE to client.
   // Normally, waiting EOSE from 3 relays should be enough. Leaving it with 0 equals wait for every established relays.
   // NOTE: Please adjust this max score correctly with your configured relays.
   //       If you only setted up 3 relays, Set the <max_eose_score> as 0.
   // Tip : The bigger = The more accurate EOSE, The less = EOSE sent way earlier.
-  max_eose_score: 2,
+  max_eose_score: 0,
 
   // A whitelist of users public keys who could use this bouncer.
   // Leaving this empty will allows everyone to use this bouncer.
@@ -90,6 +90,6 @@ module.exports = {
   relays: [
     "wss://yabu.me",
     "wss://relay.damus.io",
-    "wss://search.nos.today",
+    //"wss://search.nos.today",
   ]
 }
