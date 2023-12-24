@@ -28,7 +28,7 @@ module.exports = {
   // Could save client's bandwdith.
   //
   // Depending on <wait_eose> settings, It could either miss some events.
-  pause_on_limit: true,
+  pause_on_limit: false,//true,
 
   // EOSE timeout in miliseconds
   eose_timeout: 2300,
