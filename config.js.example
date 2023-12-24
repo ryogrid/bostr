@@ -1,23 +1,22 @@
-
 // Bostr config
 
 module.exports = {
   // Server listener [Required]
-  address: "127.0.0.1",
+  address: "0.0.0.0",
   port: "8080",
 
   // Clusters.
   // 0 will make bostr run clusters with available parallelism / CPU cores.
-  clusters: 1,
+  clusters: 0,
 
   // Log about bouncer connection with relays? 
   log_about_relays: false,
 
-  // Time before reconnect to relays in miliseconds.
-  reconnect_time: 1000,
+  // Time before reconnect to relays in milliseconds.
+  reconnect_time: 5000,
 
   // Wait for every connected relays send EOSE.
-  // Could improve accurancy on received events.
+  // Could improve accuracy on received events.
   //
   // Depending on your configured relays,
   // It may could cause loading problems in client due to slow EOSE from bouncer.
@@ -25,12 +24,12 @@ module.exports = {
   wait_eose: true,
 
   // Pause an subscription from receiving further events after reached to <filter.limit>
-  // Could save client's bandwdith.
+  // Could save client's bandwidth.
   //
   // Depending on <wait_eose> settings, It could either miss some events.
   pause_on_limit: true,
 
-  // EOSE timeout in miliseconds
+  // EOSE timeout in milliseconds
   eose_timeout: 2300,
 
   // Maximum of received EOSE from relays to send EOSE to client.
@@ -38,12 +37,15 @@ module.exports = {
   // NOTE: Please adjust this max score correctly with your configured relays.
   //       If you only setted up 3 relays, Set the <max_eose_score> as 0.
   // Tip : The bigger = The more accurate EOSE, The less = EOSE sent way earlier.
-  max_eose_score: 0,
+  max_eose_score: 3,
 
   // A whitelist of users public keys who could use this bouncer.
   // Leaving this empty will allows everyone to use this bouncer.
   // NOTE: - Require NIP-42 compatible nostr client
   authorized_keys: [
+    // "pubkey-in-hex",
+    // "npub ....",
+    // ....
   ],
 
   // Used for accessing NIP-42 protected events from certain relays.
@@ -83,13 +85,16 @@ module.exports = {
   //
   // To make this working properly, Please enable <pause_on_limit>.
   cache_relays: [
-  //  "wss://desktop-ioaspn6.tailed179.ts.net/cache"
+    // "ws://localhost:8001",
+    // "ws://localhost:8002",
+    // ...and so on
   ],
 
   // Nostr relays to bounce [Required]
   relays: [
-    "wss://yabu.me",
-    "wss://relay.damus.io",
-    //"wss://search.nos.today",
+    "wss://example1.com",
+    "wss://example2.com",
+    // "wss://example3.com",
+    // ...and so on
   ]
 }

@@ -7,8 +7,6 @@ let { relays, tmp_store, log_about_relays, authorized_keys, private_keys, reconn
 
 const socks = new Set();
 const csess = new Map();
-// for checking connection existance
-const relay_conn = new Map();
 const reconn_tout_handles = new Map();
 
 authorized_keys = authorized_keys?.map(i => i.startsWith("npub") ? nip19.decode(i).data : i);
@@ -124,7 +122,7 @@ module.exports = (ws, req) => {
       clearTimeout(reconn_tout_handles[ws.id]);
       reconn_tout_handles.delete(ws.id);
     }
-        
+
     if (!authorized) return;
     terminate_subs(ws.id);
   });
@@ -174,7 +172,6 @@ function direct_bc(msg, id) {
     if (sock.id !== id) continue;
     if (sock.readyState >= 2) {
       socks.delete(sock);
-      relay_conn.delete(sock.url);
       return;
     }
     sock.send(JSON.stringify(msg));
@@ -187,7 +184,6 @@ function cache_bc(msg, id) {
     if (sock.id !== id) continue;
     if (sock.readyState >= 2) {
       socks.delete(sock);
-      relay_conn.delete(sock.url);
       return
     }
     sock.send(JSON.stringify(msg));
@@ -205,7 +201,6 @@ function terminate_subs(id) {
     if (sock.id !== id) continue;
     sock.terminate();
     socks.delete(sock);
-    relay_conn.delete(sock.url);
   }
 }
 
@@ -218,12 +213,10 @@ function newConn(addr, id) {
       "User-Agent": "Bostr; The nostr relay bouncer; https://github.com/Yonle/bostr"
     }
   });
-  console.log("already exist connection to ", addr, ":", relay_conn.has(relay.url) ? "yes" : "no");
 
   relay.id = id;
   relay.on('open', _ => {
     socks.add(relay); // Add this socket session to [socks]
-    relay_conn.set(relay.url, relay);
     if (process.env.LOG_ABOUT_RELAYS || log_about_relays) console.log(process.pid, "---", `[${id}] [${socks.size}/${relays.length*csess.size}]`, relay.url, "is connected");
 
     for (i of client.my_events) {
@@ -251,13 +244,8 @@ function newConn(addr, id) {
 
         // if filter.since > receivedEvent.created_at, skip
         // if receivedEvent.created_at > filter.until, skip
-        // console.log("------")
-        // console.log(data)
-        // console.log("------")
         let data_1 = client.subs.get(data[1])
-        //if (client.subs.get(data[1]).since > data[2].created_at) return;
         if ('since' in data_1 && data_1.since > data[2].created_at) return;
-        //if (data[2].created_at > client.subs.get(data[1]).until) return;
         if ('until' in data_1 && data[2].created_at > data_1.until) return;
         const NotInSearchQuery = client.subs.get(data[1]).search && !data[2].content?.toLowerCase().includes(client.subs.get(data[1]).search?.toLowerCase());
 
@@ -323,12 +311,10 @@ function newConn(addr, id) {
   relay.on('error', _ => {
     if (process.env.LOG_ABOUT_RELAYS || log_about_relays) console.error(process.pid, "-!-", `[${id}]`, relay.url, _.toString())
     socks.delete(sock);
-    relay_conn.delete(relay.url);
   });
 
   relay.on('close', _ => {
     socks.delete(relay) // Remove this socket session from [socks] list
-    relay_conn.delete(relay.url);
     if (process.env.LOG_ABOUT_RELAYS || log_about_relays) console.log(process.pid, "-!-", `[${id}] [${socks.size}/${relays.length*csess.size}]`, "Disconnected from", relay.url);
 
     if (!csess.has(id)) return;
