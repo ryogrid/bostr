@@ -110,10 +110,6 @@ module.exports = (ws, req) => {
 
   ws.on('error', _ => {
     console.error();
-    if (reconn_tout_handles[ws.id]) {
-      clearTimeout(reconn_tout_handles[ws.id]);
-      reconn_tout_handles.delete(ws.id);
-    }
   });
   
   ws.on('close', _ => {
@@ -310,21 +306,6 @@ function newConn(addr, id) {
 
   relay.on('error', _ => {
     if (process.env.LOG_ABOUT_RELAYS || log_about_relays) console.error(process.pid, "-!-", `[${id}]`, relay.url, _.toString())
-    socks.delete(relay);
-    try {
-      relay.close();  
-    } catch (error) {
-     // Ignore 
-    }
-    // As a bouncer server, We need to reconnect.
-    let tout_handle =       
-      setTimeout(_ => { 
-          newConn(addr, id)
-          reconn_tout_handles.delete(id);
-        },
-        reconnect_time || 5000
-      );
-    reconn_tout_handles.set(id, tout_handle);
   });
 
   relay.on('close', _ => {
