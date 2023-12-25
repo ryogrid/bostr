@@ -226,8 +226,8 @@ function newConn(addr, id) {
 
         // if filter.since > receivedEvent.created_at, skip
         // if receivedEvent.created_at > filter.until, skip
-        if (client.subs.get(data[1]).since > data[2].created_at) return;
-        if (data[2].created_at > client.subs.get(data[1]).until) return;
+        if ('since' in client.subs.get(data[1]) && client.subs.get(data[1]).since > data[2].created_at) return;
+        if ('until' in client.subs.get(data[1]) && data[2].created_at > client.subs.get(data[1]).until) return;
         const NotInSearchQuery = client.subs.get(data[1]).search && !data[2].content?.toLowerCase().includes(client.subs.get(data[1]).search?.toLowerCase());
 
         if (NotInSearchQuery) return;
@@ -263,7 +263,7 @@ function newConn(addr, id) {
         if (process.env.LOG_ABOUT_RELAYS || log_about_relays) console.log(process.pid, "---", `[${id}]`, `got EOSE from ${relay.url} for ${data[1]}. There are ${client.pendingEOSE.get(data[1])} EOSE received out of ${Array.from(socks).filter(sock => sock.id === id).length} connected relays.`);
 
         if (!cache_relays?.includes(relay.url)) {
-          if (wait_eose && (client.pendingEOSE.get(data[1]) < (max_eose_score || Array.from(socks).filter(sock => sock.id === id).length))) return;
+          if (wait_eose && ((client.pendingEOSE.get(data[1]) < max_eose_score) || (client.pendingEOSE.get(data[1]) < Array.from(socks).filter(sock => sock.id === id).length))) return;
           if (client.pause_subs.has(data[1])) return client.pause_subs.delete(data[1]);
 
           cancel_EOSETimeout(data[1]);
